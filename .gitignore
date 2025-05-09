@@ -13,3 +13,8 @@ machinery/init-dev.sh
 machinery/.env
 machinery/vendor
 deployments/docker/private-docker-compose.yaml
+.env
+.last_media_file
+media/
+recordings/
+sync.log

@@ -1,0 +1,38 @@
+x-environment: &common-variables
+  TZ: UTC
+
+services:
+  kerberos-agent:
+    image: "kerberos/agent:latest"
+    container_name: kerberos-agent
+    privileged: true
+    restart: always
+    devices:
+      - "/dev/video0:/dev/video0"
+    ports:
+      - "8080:80"
+    environment:
+      <<: *common-variables
+      AGENT_NAME: agent1
+      AGENT_CAPTURE_IPCAMERA_RTSP: ${RTSP_STREAM}
+      AGENT_KEY: "1"
+      CAPTURE_DRIVER: video4linux2
+      CAPTURE_DEVICE: /dev/video0
+      STORAGE_DRIVER: s3
+      STORAGE_ENDPOINT: s3.amazonaws.com
+      STORAGE_ACCESSKEY: ${AWS_ACCESS_KEY_ID}
+      STORAGE_SECRETKEY: ${AWS_SECRET_ACCESS_KEY}
+      STORAGE_BUCKET: ${AWS_BUCKET_NAME}
+      STORAGE_REGION: ${AWS_DEFAULT_REGION}
+      STORAGE_SECURE: true
+      STORAGE_PATH: kerberos-uploads
+      STORAGE_DIRECTORY: /home/agent/data/recordings
+    volumes:
+      - ./config:/home/agent/data/config
+      - ./media:/home/agent/data/recordings
+      - ./logs:/home/agent/data/logs
+    networks:
+      - cluster-net
+
+networks:
+  cluster-net: {}
